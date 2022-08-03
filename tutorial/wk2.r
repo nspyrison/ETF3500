@@ -101,3 +101,4 @@ ggplot(comScore_no, aes(x=Duration, y=PageViews)) +
 ## Bonus: other packages
 skimr::skim(comScore) ## Windows 10 needs R v4.2 or higher for UTF-8 support :(.
 GGally::ggpairs(comScore_no, mapping = aes(color=Buy)) ## poor results with outliers
+
