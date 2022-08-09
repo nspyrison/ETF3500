@@ -26,7 +26,7 @@ comScore <- readRDS('./data/comScore.rds')
 
 ## Beer Data -----
 #1. Produce a histogram of the cost per 12 fl. oz. variable.
-ggplot(Beer, aes(x=cost)) +
+ggplot(Beer, aes(x=cost, fill=light)) +
   geom_histogram() +
   labs(x="Cost per fluid oz.", y="Count of Beers")
 # Observations & implications?
