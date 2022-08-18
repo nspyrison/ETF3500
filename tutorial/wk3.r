@@ -3,9 +3,9 @@
 # - Last week the lecture covered R naming conventions etc.
 # - In the tutorial we started with beer data and then looked at comScore
 # - Questions/topics from last time:
-#    - GROUP ASSIGNMENT undergrad &masters? Yes (assignment 3 differs thoguh) 
+#    - GROUP ASSIGNMENT undergrad & masters? Yes (assignment 3 differs though) 
 # - Lecture: covered distances; numeric and binary
-# - Tutorial: start with same Beer data, introducing new R content 
+# - Tutorial: Practice distances with our own data and Beer (euclid/manhat/jacard).
 
 # This week ----
 
@@ -24,35 +24,35 @@ Beer <- readRDS('./data/Beer.rds')
 
 
 ## 1-3 distance of numeric----
-df <- data.frame(age_yr = c(20, 25), height_cm = c(155, 163))
-eucl_dist <- sqrt((df[1,1]-df[2,1])^2 + (df[1,2]-df[2,2])^2)
-manh_dist <- abs(df[1,1]-df[2,1]) + abs(df[1,2]-df[2,2])
+df <- data.frame(age_yr = c(20, 25, 17), height_cm = c(155, 163, 180))
+ggplot(df, aes(age_yr, height_cm)) + geom_point()
+
+(eucl_dist <- sqrt((df[1,1]-df[2,1])^2 + (df[1,2]-df[2,2])^2))
+(manh_dist <- abs(df[1,1]-df[2,1]) + abs(df[1,2]-df[2,2]))
 
 ## in meters
-manh_dist <- abs(df[1,1]-df[2,1]) + (abs(df[1,2]-df[2,2]))/100
+(manh_dist2 <- abs(df[1,1]-df[2,1]) + (abs(df[1,2]-df[2,2]))/100)
 ## Not that distance is sensitive to units, if not normalized/standardized!
-
 
 ## 4 & 5 distance of binary-----
 set.seed(123)
 a <- sample(c(0,1), size = 8, replace = T)
 b <- sample(c(0,1), size = 8, replace = T)
-jac_sim <- sum(a&b)/length(a) # 1 in 8
-jac_dist <- 1 - jac_sim
+(jac_sim <- sum(a&b)/length(a)) # 2 in 8
+(jac_dist <- 1 - jac_sim)
 
 # 6 How to define distances across numeric and categorical?
 
 ## 7 Distance between two beers ----
-Beer <- readRDS('./data/Beer.rds')
+Beer <- readRDS('./data/Beer.rds') %>%
+  mutate(beer=trimws(beer)) ## Trim whitespace
 
 PabstEL <- Beer %>%
-  mutate(beer=trimws(beer)) %>% #The beers have many trailing spaces, trimws removes them
   filter(beer == c('Pabst Extra Light')) %>%
   select_if(is.numeric)
 PabstEL
 
-Augs <- Beer%>%
-  mutate(beer=trimws(beer))%>%
+Augs <- Beer %>%
   filter(beer == c('Augsberger'))%>%
   select_if(is.numeric)
 Augs
@@ -60,10 +60,9 @@ Augs
 dif<-PabstEL-Augs
 dif
 dif^2
+sqrt(sum(dif^2)) ## unscaled euclidean distance.
 
-sqrt(sum(dif^2)) ## unscale eclidian distance.
-
-## 8 standardise the data first ----
+## 8 standardize the data first ----
 
 ## Full sample means
 means <- Beer %>%
@@ -77,7 +76,7 @@ sds <- Beer %>%
   summarise_all(sd)
 sds
 
-## stdized 2 beers
+## standardized 2 beers
 PabstEL_std <- (PabstEL-means)/sds
 Augs_std <- (Augs-means)/sds
 dif <- PabstEL_std - Augs_std
@@ -86,6 +85,8 @@ sqrt(sum(dif^2))
 
 
 ## Alternatively
+Beer <- data.frame(Beer)
+rownames(Beer) <- Beer$beer
 Beer%>%
   select_if(is.numeric)%>%
   scale%>%
