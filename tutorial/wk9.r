@@ -1,7 +1,7 @@
 # Overview ----
 
 # - Last week we covered Factor Modelling
-# - This week's focus: 
+# - This week's focus: Matrix Geometry (theory)
 
 # This week ----
 
